@@ -1,4 +1,4 @@
-from ursina import mouse, Vec3
+from ursina import mouse, Vec3, time
 from ursina.prefabs.first_person_controller import FirstPersonController
 from entities import create_throwable_cube
 from config import CUBE_SPAWN_HEIGHT
@@ -7,6 +7,8 @@ class GamePlayer:
     def __init__(self, start_position=(0, 2, -5)):
         """Initialize the player with first person controller."""
         self.controller = FirstPersonController(position=start_position)
+        # Invert mouse Y-axis by setting negative Y sensitivity
+        self.controller.mouse_sensitivity = Vec3(-40, 40, 40)
     
     def throw_cube(self):
         """Create and throw a cube from player's position."""

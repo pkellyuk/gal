@@ -15,6 +15,7 @@ def create_floor():
         texture='white_cube',
         texture_scale=(20,20),
         position=FLOOR_POSITION,
+        rotation_x=180,  # Flip the floor over
         collider='box',
         friction=FLOOR_FRICTION
     )
@@ -29,7 +30,8 @@ def create_grid():
                 model='quad',
                 scale=GRID_LINE_SCALE_VERTICAL,
                 color=GRID_COLOR,
-                position=(i, 0.01, 0)
+                position=(i, -0.01, 0),
+                rotation_x=180
             )
         )
         # Horizontal lines
@@ -38,8 +40,8 @@ def create_grid():
                 model='quad',
                 scale=GRID_LINE_SCALE_HORIZONTAL,
                 color=GRID_COLOR,
-                rotation=(90, 0, 0),
-                position=(0, 0.01, i)
+                rotation=(270, 0, 0),
+                position=(0, -0.01, i)
             )
         )
     return grid_entities
@@ -54,13 +56,13 @@ def create_throwable_cube(spawn_position, throw_direction):
         collider='box'
     )
     
-    # Enable physics
+    # Enable physics and initialize attributes
     new_cube.rigidbody = True
-    
-    # Add initial velocity
     new_cube.dy = CUBE_INITIAL_UP_VELOCITY
     new_cube.dx = throw_direction.x * CUBE_THROW_FORCE
     new_cube.dz = throw_direction.z * CUBE_THROW_FORCE
+    new_cube.angular_velocity = Vec3(0, 0, 0)
+    new_cube.energy = 0
     
     # Add random rotation
     new_cube.rotation = Vec3(
