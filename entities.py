@@ -1,4 +1,4 @@
-from ursina import Entity, Vec3, random, color
+from ursina import Entity, Vec3, random, color, time, Text, camera, window, Button, ButtonList
 from config import (
     FLOOR_SCALE, FLOOR_POSITION, FLOOR_FRICTION,
     CUBE_COLORS, CUBE_SCALE, CUBE_SPAWN_HEIGHT,
@@ -6,20 +6,25 @@ from config import (
     GRID_SIZE, GRID_LINE_SCALE_VERTICAL, GRID_LINE_SCALE_HORIZONTAL, GRID_COLOR
 )
 
+#==============================
 def create_floor():
-    """Create the game floor with collision."""
+    """Create the game floor with physics."""
     return Entity(
         model='cube',
         scale=FLOOR_SCALE,
         color=color.white,
         texture='white_cube',
-        texture_scale=(20,20),
+        texture_scale=(100,100),
         position=FLOOR_POSITION,
         rotation_x=180,  # Flip the floor over
         collider='box',
-        friction=FLOOR_FRICTION
+        rigidbody=True,
+        mass=0,  # Zero mass makes it static/immovable
+        friction=FLOOR_FRICTION,
+        restitution=0.3
     )
 
+#==============================
 def create_grid():
     """Create grid lines on the floor."""
     grid_entities = []
@@ -45,30 +50,3 @@ def create_grid():
             )
         )
     return grid_entities
-
-def create_throwable_cube(spawn_position, throw_direction):
-    """Create a physics-enabled cube that can be thrown."""
-    new_cube = Entity(
-        model='cube',
-        color=random.choice(CUBE_COLORS),
-        scale=CUBE_SCALE,
-        position=spawn_position,
-        collider='box'
-    )
-    
-    # Enable physics and initialize attributes
-    new_cube.rigidbody = True
-    new_cube.dy = CUBE_INITIAL_UP_VELOCITY
-    new_cube.dx = throw_direction.x * CUBE_THROW_FORCE
-    new_cube.dz = throw_direction.z * CUBE_THROW_FORCE
-    new_cube.angular_velocity = Vec3(0, 0, 0)
-    new_cube.energy = 0
-    
-    # Add random rotation
-    new_cube.rotation = Vec3(
-        random.uniform(*CUBE_ROTATION_RANGE),
-        random.uniform(*CUBE_ROTATION_RANGE),
-        random.uniform(*CUBE_ROTATION_RANGE)
-    )
-    
-    return new_cube
